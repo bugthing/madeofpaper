@@ -19,13 +19,15 @@ module.exports = {
     new CleanWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      title: 'MadeOfPaper',
       template: './src/html/index.html',
+      title: 'MadeOfPaper',
       inject: true,
       chunks: ['index'],
       filename: 'index.html'
     }),
     new HtmlWebpackPlugin({
+      template: './src/html/app.html',
+      title: 'MOP - Chart Builder',
       inject: true,
       chunks: ['app'],
       filename: 'app.html'

@@ -1,3 +1,9 @@
+#app {
+  height: 100%;
+  margin: 0 auto;
+  padding: 10px;
+}
+
 #chart-builder {
   width: 100%;
   min-height: 100%;
