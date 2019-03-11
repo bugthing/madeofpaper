@@ -1,0 +1,11 @@
+#chart-builder {
+  width: 100%;
+  min-height: 100%;
+  background-color:rgba(0, 0, 0, 0.8);
+  margin: 0 auto;
+}
+
+h1 {
+  color: white;
+  padding: 5px;
+}
