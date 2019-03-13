@@ -4,6 +4,7 @@ class ChartNode extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: 'Node',
       styles: {
         position: 'absolute',
         left: `${this.props.x}px`,
@@ -12,10 +13,15 @@ class ChartNode extends React.Component {
     };
   }
 
+  handleClick(e) {
+    console.log('node clicked');
+    e.stopPropagation();
+  }
+
   render() {
     return (
-      <div style={this.state.styles} width="20" height="20">
-        N
+      <div className="node-container" style={this.state.styles} onClick={e => this.handleClick(e)}>
+        <div className="node">{this.state.title}</div>
       </div>
     );
   }
