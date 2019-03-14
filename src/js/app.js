@@ -3,7 +3,7 @@ import '../css/app.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ChartBuilder from './chart-builder';
-import {ChartContext} from './chart-context';
+import { ChartContext } from './chart-context';
 
 class App extends React.Component {
   render() {

@@ -7,4 +7,3 @@ export const chart = {
 };
 
 export const ChartContext = React.createContext(chart);
-

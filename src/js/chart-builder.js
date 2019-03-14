@@ -31,7 +31,7 @@ class ChartBuilder extends React.Component {
 
   render() {
     let nodes = this.state.nodes.map((node, index) => {
-      return <ChartNode key={index} name="Node" x={node.x} y={node.y} clickNode={this.handleNodeClick} />
+      return <ChartNode key={index} name="Node" x={node.x} y={node.y} clickNode={this.handleNodeClick} />;
     });
 
     let lines = this.state.nodes
@@ -57,6 +57,5 @@ class ChartBuilder extends React.Component {
   }
 }
 ChartBuilder.contextType = ChartContext;
-
 
 export default ChartBuilder;
