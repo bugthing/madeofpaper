@@ -1,19 +1,15 @@
 import React from 'react';
 
-class ChartLine extends React.Component {
-  render() {
-    return (
-      <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh' }}>
-        <line
-          style={{ 'stroke-width': '2px', stroke: 'rgb(255,255,255)' }}
-          x1={this.props.start_x}
-          y1={this.props.start_y}
-          x2={this.props.end_x}
-          y2={this.props.end_y}
-        />
-      </svg>
-    );
-  }
-}
+const ChartLine = ( { start_x, start_y, end_x, end_y } ) => (
+  <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh', border: 'thin solid red' }}>
+    <line
+      style={{ 'strokeWidth': '2px', stroke: 'rgb(255,255,255)' }}
+      x1={start_x}
+      y1={start_y}
+      x2={end_x}
+      y2={end_y}
+    />
+  </svg>
+);
 
 export default ChartLine;
