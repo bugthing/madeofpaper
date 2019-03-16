@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ChartNode from './chart-node';
 import ChartLine from './chart-line';
-import ChartContext from './chart-context';
+import { ChartContext } from './chart-context';
 
 class ChartBuilder extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { nodes: [] };
+    this.state = { nodes: [], lines: [] };
   }
 
   handleNodeClick(e) {
@@ -16,17 +16,14 @@ class ChartBuilder extends React.Component {
   }
 
   handleSpaceClick(e) {
-    console.log('space clicked:');
-    let rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-    this.setState({
-      nodes: [
-        ...this.state.nodes,
-        {
-          x: e.nativeEvent.offsetX + rect.x,
-          y: e.nativeEvent.offsetY + rect.y
-        }
-      ]
-    });
+    let nodes = [
+      ...this.state.nodes,
+      {
+        x: e.nativeEvent.offsetX,
+        y: e.nativeEvent.offsetY
+      }
+    ];
+    this.setState({ nodes: nodes });
   }
 
   render() {
@@ -47,12 +44,14 @@ class ChartBuilder extends React.Component {
 
     let props = this.props;
     let stuff = this.context;
-    console.log('FUCK', stuff, props);
     return (
-      <div id="chart-builder" onClick={e => this.handleSpaceClick(e)}>
-        <h1> Chart Builder </h1>
-        {nodes}
-      </div>
+      <ChartContext.Provider value={this.state}>
+        <div id="chart-builder" onClick={e => this.handleSpaceClick(e)}>
+          <h1> Chart Builder: {this.context.title} </h1>
+          <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh' }}>{lines}</svg>
+          {nodes}
+        </div>
+      </ChartContext.Provider>
     );
   }
 }
