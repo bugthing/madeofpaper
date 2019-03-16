@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import uuidv1 from 'uuid/v1'
 import ChartNode from './chart-node';
 import ChartLine from './chart-line';
 import { ChartContext } from './chart-context';
@@ -11,7 +12,7 @@ class ChartBuilder extends React.Component {
   }
 
   handleNodeClick(e) {
-    console.log('node clicked:');
+    console.log('node clicked:', this);
     e.stopPropagation();
   }
 
@@ -19,6 +20,7 @@ class ChartBuilder extends React.Component {
     let nodes = [
       ...this.state.nodes,
       {
+        id: uuidv1(),
         x: e.nativeEvent.offsetX,
         y: e.nativeEvent.offsetY
       }
