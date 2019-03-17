@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import uuidv1 from 'uuid/v1'
+import uuidv1 from 'uuid/v1';
 import ChartNode from './chart-node';
 import ChartLine from './chart-line';
 import { ChartContext } from './chart-context';
@@ -8,44 +8,48 @@ import { ChartContext } from './chart-context';
 class ChartBuilder extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { nodes: [], lines: [] };
+    this.state = { nodes: {}, selectedUuid: undefined };
+    this.handleNodeClick = this.handleNodeClick.bind(this);
   }
 
-  handleNodeClick(e) {
-    console.log('node clicked:', this);
+  handleNodeClick(e, nodeProps) {
+    this.setState({ selectedUuid: nodeProps.uuid });
     e.stopPropagation();
   }
 
   handleSpaceClick(e) {
-    let nodes = [
-      ...this.state.nodes,
-      {
-        id: uuidv1(),
-        x: e.nativeEvent.offsetX,
-        y: e.nativeEvent.offsetY
-      }
-    ];
-    this.setState({ nodes: nodes });
+    const uuid = uuidv1();
+    const newNode = {
+      uuid: uuid,
+      name: `Node`,
+      parentUuid: this.state.selectedUuid,
+      x: e.nativeEvent.offsetX,
+      y: e.nativeEvent.offsetY
+    };
+    const nodes = { ...this.state.nodes, [uuid]: newNode };
+
+    this.setState({ nodes: nodes, selectedUuid: uuid });
   }
 
   render() {
-    let nodes = this.state.nodes.map((node, index) => {
-      return <ChartNode key={index} name="Node" x={node.x} y={node.y} clickNode={this.handleNodeClick} />;
+    const nodes = Object.keys(this.state.nodes).map((nodeUuid, index) => {
+      const node = this.state.nodes[nodeUuid];
+      node.selected = node.uuid === this.state.selectedUuid ? true : false;
+
+      return <ChartNode key={index} clickNode={this.handleNodeClick} {...node} />;
     });
 
-    let lines = this.state.nodes
-      .reduce((acc, v, i, a) => {
-        if (i < a.length - 1) {
-          acc.push([a[i], a[i + 1]]);
-        }
-        return acc;
-      }, [])
-      .map((pair, index) => {
-        return <ChartLine key={index} start_x={pair[0].x} start_y={pair[0].y} end_x={pair[1].x} end_y={pair[1].y} />;
-      });
+    const lines = Object.keys(this.state.nodes)
+      .map((nodeUuid, index) => {
+        const node = this.state.nodes[nodeUuid];
 
-    let props = this.props;
-    let stuff = this.context;
+        if (node.parentUuid !== undefined) {
+          let parentNode = this.state.nodes[node.parentUuid];
+          return <ChartLine key={index} start_x={parentNode.x} start_y={parentNode.y} end_x={node.x} end_y={node.y} />;
+        }
+      })
+      .filter(Boolean);
+
     return (
       <ChartContext.Provider value={this.state}>
         <div id="chart-builder" onClick={e => this.handleSpaceClick(e)}>
@@ -57,6 +61,5 @@ class ChartBuilder extends React.Component {
     );
   }
 }
-ChartBuilder.contextType = ChartContext;
 
 export default ChartBuilder;

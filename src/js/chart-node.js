@@ -1,8 +1,17 @@
 import React from 'react';
 
-const ChartNode = ({ name, x, y, clickNode }) => (
-  <div className="node-container" style={{ position: 'absolute', left: `${x}px`, top: `${y}px` }} onClick={clickNode}>
-    <div className="node">{name}</div>
+const ChartNode = props => (
+  <div
+    className="node-container"
+    style={{
+      position: 'absolute',
+      left: `${props.x}px`,
+      top: `${props.y}px`,
+      border: `${props.selected ? 'thick solid blue' : '0px'}`
+    }}
+    onClick={e => props.clickNode(e, props)}
+  >
+    <div className="node">{props.name}</div>
   </div>
 );
 
