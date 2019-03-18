@@ -10,6 +10,7 @@ const ChartNode = props => (
       border: `${props.selected ? 'thick solid blue' : '0px'}`
     }}
     onClick={e => props.clickNode(e, props)}
+    onDoubleClick={e => props.editNode(e, props)}
   >
     <div className="node">{props.name}</div>
   </div>
