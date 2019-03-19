@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import uuidv1 from 'uuid/v1';
 import ChartNode from './chart-node';
 import ChartLine from './chart-line';
+import NodeModal from './node-modal';
 import { ChartContext } from './chart-context';
 
 const defaultNodeName = 'Node';
@@ -10,9 +11,33 @@ const defaultNodeName = 'Node';
 class ChartBuilder extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { nodes: {}, selectedUuid: undefined };
+
     this.handleNodeClick = this.handleNodeClick.bind(this);
     this.handleNodeDoubleClick = this.handleNodeDoubleClick.bind(this);
+    this.handleNodeNameChange = this.handleNodeNameChange.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleDeleteNode = this.handleDeleteNode.bind(this);
+
+    this.state = {
+      title: 'Some chart',
+      nodes: {},
+      selectedUuid: undefined,
+      openModal: false
+    };
+  }
+
+  handleNodeNameChange(newName) {
+    this.state.nodes[this.state.selectedUuid].name = newName;
+    this.setState({ nodes: { ...this.state.nodes } });
+  }
+
+  handleCloseModal() {
+    this.setState({ openModal: false });
+  }
+
+  handleDeleteNode() {
+    delete this.state.nodes[this.state.selectedUuid];
+    this.setState({ nodes: { ...this.state.nodes }, openModal: false });
   }
 
   handleNodeClick(e, nodeProps) {
@@ -24,16 +49,10 @@ class ChartBuilder extends React.Component {
     this.setState({ openModal: true });
   }
 
-  handleModalKeyPress(e) {
-    if (e.key == 'Enter') {
-      this.setState({ openModal: false });
+  handleSpaceKeyPress(e) {
+    if (e.key == 'Enter' && this.state.selectedUuid) {
+      this.setState({ openModal: true });
     }
-  }
-
-  handleNodeNaming(e) {
-    const newName = event.target.value;
-    this.state.nodes[this.state.selectedUuid].name = newName;
-    this.setState({ nodes: { ...this.state.nodes } });
   }
 
   handleSpaceClick(e) {
@@ -71,7 +90,11 @@ class ChartBuilder extends React.Component {
 
         if (node.parentUuid !== undefined) {
           let parentNode = this.state.nodes[node.parentUuid];
-          return <ChartLine key={index} start_x={parentNode.x} start_y={parentNode.y} end_x={node.x} end_y={node.y} />;
+          if (parentNode) {
+            return (
+              <ChartLine key={index} start_x={parentNode.x} start_y={parentNode.y} end_x={node.x} end_y={node.y} />
+            );
+          }
         }
       })
       .filter(Boolean);
@@ -80,32 +103,22 @@ class ChartBuilder extends React.Component {
   }
 
   renderModel() {
-    if (this.state.openModal) {
-      let value = this.state.nodes[this.state.selectedUuid].name;
-      if (value === defaultNodeName) {
-        value = '';
-      }
-      return (
-        <div className="modal-container">
-          <div className="modal-content">
-            <input
-              autoFocus
-              name="nodeName"
-              onKeyPress={e => this.handleModalKeyPress(e)}
-              onChange={e => this.handleNodeNaming(e)}
-              value={value}
-            />
-          </div>
-        </div>
-      );
-    }
+    if (!this.state.openModal) return false;
+    return (
+      <NodeModal
+        defaultNodeName={defaultNodeName}
+        changeNodeName={this.handleNodeNameChange}
+        closeModal={this.handleCloseModal}
+        deleteNode={this.handleDeleteNode}
+      />
+    );
   }
 
   render() {
     return (
       <ChartContext.Provider value={this.state}>
         <div id="chart-builder" onClick={e => this.handleSpaceClick(e)}>
-          <h1> Chart Builder: {this.context.title} </h1>
+          <h1> Chart Builder: {this.state.title} </h1>
           {this.renderLines()}
           {this.renderNodes()}
           {this.renderModel()}
