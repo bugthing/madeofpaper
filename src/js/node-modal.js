@@ -14,6 +14,18 @@ class NodeModal extends React.Component {
     this.props.deleteNode();
   }
 
+  isLeafNode() {
+    return Object.keys(this.context.nodes).find(nodeUuid => {
+      return this.context.nodes[nodeUuid].parentUuid === this.context.selectedUuid;
+    });
+  }
+
+  renderDeleteButton() {
+    if (this.isLeafNode()) {
+      return <div onClick={e => this.handleNodeDelete(e)}> x </div>;
+    }
+  }
+
   render() {
     let value = this.context.nodes[this.context.selectedUuid].name;
     if (value === this.props.defaultNodeName) value = '';
@@ -28,7 +40,7 @@ class NodeModal extends React.Component {
             onChange={e => this.handleNodeNaming(e)}
             value={value}
           />
-          <div onClick={e => this.handleNodeDelete(e)}>x</div>
+          {this.renderDeleteButton()}
         </div>
       </div>
     );
