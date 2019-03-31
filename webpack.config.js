@@ -7,7 +7,8 @@ module.exports = {
   mode: 'development',
   entry: {
     index: './src/js/index.js',
-    app: './src/js/app.js'
+    chart: './src/js/chart.js',
+    reviewapps: './src/js/reviewapps.js'
   },
   devtool: 'inline-source-map',
   devServer: {
@@ -26,11 +27,18 @@ module.exports = {
       filename: 'index.html'
     }),
     new HtmlWebpackPlugin({
-      template: './src/html/app.html',
+      template: './src/html/chart.html',
       title: 'MOP - Chart Builder',
       inject: true,
-      chunks: ['app'],
-      filename: 'app.html'
+      chunks: ['chart'],
+      filename: 'chart.html'
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/html/reviewapps.html',
+      title: 'Review Apps',
+      inject: true,
+      chunks: ['reviewapps'],
+      filename: 'reviewapps.html'
     })
   ],
   output: {

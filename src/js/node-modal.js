@@ -21,7 +21,7 @@ class NodeModal extends React.Component {
   }
 
   renderDeleteButton() {
-    if (this.isLeafNode()) {
+    if (!this.isLeafNode()) {
       return <div onClick={e => this.handleNodeDelete(e)}> x </div>;
     }
   }
