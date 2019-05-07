@@ -30,9 +30,9 @@
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "style-loader": "^0.23.1",
+    "uuid": "^3.3.2",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.2.1",
-    "uuid": "^3.3.2"
+    "webpack-dev-server": "^3.2.1"
   }
 }
