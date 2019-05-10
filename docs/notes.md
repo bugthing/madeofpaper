@@ -26,30 +26,32 @@ Once up and running:
 
 ### Start Postgraphile
 
-    docker run  -d --name=postgraphile -p 5000:5000 --link postgres graphile/postgraphile --connection postgres://postgres:postgres@postgres:5432/reviewapps --schema reviewapps --watch
+    docker run -d --name=postgraphile -p 5000:5000 --link postgres graphile/postgraphile --connection postgres://postgres:postgres@postgres:5432/reviewapps --schema reviewapps --watch
 
 ### Start psql session (if needed)
 
-    docker run -it --link postgres -e PGOPTIONS='-c search_path=reviewapps,public' postgres:11.2 psql -h postgres -U postgres reviewapps
+    docker run -it --rm --link postgres -e PGOPTIONS='-c search_path=reviewapps,public' postgres:11.2 psql -h postgres -U postgres reviewapps
 
 ### GH web hook
+
+Start container to handle incoming webhooks
+
+    docker run -it --rm -p 9000:9000 -v `pwd`/docs/webhook_config:/webhook --name=webhook almir/webhook -verbose -hooks=/webhook/hooks.json -hotreload
+
+Use ngrok to get a url you can configure as a webhook target:
+
+    $ ngrok http 9000
+
+Now configure GitHub webhook to point at the url provided by ngrok.
+
+Create webhook (using auth method described below)
+
+    curl --header "Content-Type: application/json" --request POST --data '{ "name": "web", "active": true, "events": [ "push", "pull_request" ], "config": { "url": "http://example.com/webhook", "content_type": "json" } }' https://api.github.com/repos/bugthing/madeofpaper/hooks
 
 Authentication can be done like so:
 
     curl -u 'USER:PASSWORD' --header 'x-github-otp: CODE' https://api.github.com
 
-Get a url, using something like ngrok:
-
-    $ ngrok http 456
-
-Create webhook (using auth method above)
-
-    curl --header "Content-Type: application/json" --request POST --data '{ "name": "web", "active": true, "events": [ "push", "pull_request" ], "config": { "url": "http://example.com/webhook", "content_type": "json" } }' https://api.github.com/repos/bugthing/madeofpaper/hooks
-
 Test the webhook, using something like:
 
     POST /repos/:owner/:repo/hooks/:hook_id/tests
-
-
-
-

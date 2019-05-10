@@ -1,0 +1,18 @@
+[
+  {
+    "id": "github",
+    "execute-command": "/webhook/push.sh",
+    "command-working-directory": "/webhook",
+    "pass-arguments-to-command":
+    [
+      {
+        "source": "payload",
+        "name": "repository.url"
+      },
+      {
+        "source": "payload",
+        "name": "head_commit"
+      }
+    ]
+  }
+]
